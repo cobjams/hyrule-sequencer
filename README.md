@@ -146,7 +146,7 @@ The real-time visualizer renders a 60 FPS right-to-left continuous note conveyor
 
 - **4 Dedicated Lanes**:
   - `MELODY` (Y: 28–88 px)
-  - `HARMONY` (Y: 94–176 px) — features dedicated luminous styling for arpeggiated harp & piano runs
+  - `HARM` (Y: 94–176 px) — features dedicated luminous styling for arpeggiated harp & piano runs
   - `BASS` (Y: 182–238 px)
   - `PERCUSSION` (Y: 244–294 px) — 4 vertical tiers separating snare, hi-hat, kick, and timpani hits
 - **Audio-Visual Latency Sync**: Compensates for Web Audio `outputLatency` + `baseLatency` to align note impacts with audible sound.

@@ -771,7 +771,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Lane geometry definitions (spacious 300px height with dedicated header clearance for sticky titles)
   const LANES = {
     melody: { top: 28, bottom: 88, height: 60, label: 'MELODY' },
-    harmony: { top: 94, bottom: 176, height: 82, label: 'HARMONY' },
+    harmony: { top: 94, bottom: 176, height: 82, label: 'HARM' },
     bass: { top: 182, bottom: 238, height: 56, label: 'BASS' },
     percussion: { top: 244, bottom: 294, height: 50, label: 'PERC' }
   };
