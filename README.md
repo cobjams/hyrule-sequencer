@@ -204,7 +204,7 @@ The real-time visualizer renders a 60 FPS right-to-left continuous note conveyor
 ### Installation
 
 ```bash
-git clone https://github.com/not-that-james-coburn/hyrule-sequencer.git
+git clone https://github.com/cobjams/hyrule-sequencer.git
 cd hyrule-sequencer
 npm install
 ```
