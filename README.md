@@ -8,10 +8,10 @@
 ## Visual Preview
 
 ### Desktop & Tablet Interface
-![Hyrule Sequencer Interface](docs/screenshots/app-interface.svg)
+![Hyrule Sequencer Interface](docs/screenshots/app-interface.jpg)
 
 ### N64 DSP Sound Mixer
-![N64 DSP Sound Mixer](docs/screenshots/sound-mixer.svg)
+![N64 DSP Sound Mixer](docs/screenshots/sound-mixer.jpg)
 
 ### Mobile Experience
 <p align="center">
@@ -175,10 +175,10 @@ The real-time visualizer renders a 60 FPS right-to-left continuous note conveyor
 ```
 ├── dist/                     # Optimized production bundle
 ├── docs/
-│   └── screenshots/          # Documentation assets & UI diagrams
-│       ├── app-interface.svg # Vector desktop interface diagram
-│       ├── sound-mixer.svg   # Vector N64 DSP Sound Mixer diagram
-│       └── mobile-preview.png# Mobile capture
+│   └── screenshots/          # Application screenshots & UI captures
+│       ├── app-interface.jpg # Desktop & tablet sequencer interface capture
+│       ├── sound-mixer.jpg   # N64 DSP Sound Mixer modal capture
+│       └── mobile-preview.png# Mobile interface capture
 ├── public/
 │   ├── soundfont/            # Extracted N64 AUDIOSEQ instrument samples
 │   ├── hyrule_field_midi.json# 8-bar phrase MIDI sequence note events
