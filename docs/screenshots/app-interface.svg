@@ -1,0 +1,272 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradients -->
+    <radialGradient id="bgGlow" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#0f172a" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#080c10" stop-opacity="1"/>
+    </radialGradient>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#0f172a" stop-opacity="0.9"/>
+    </linearGradient>
+    <linearGradient id="activeExploreGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="rgba(34, 197, 94, 0.25)"/>
+      <stop offset="100%" stop-color="rgba(22, 101, 52, 0.4)"/>
+    </linearGradient>
+    <linearGradient id="goldTextGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="50%" stop-color="#facc15"/>
+      <stop offset="100%" stop-color="#ca8a04"/>
+    </linearGradient>
+    <!-- Glow Filters -->
+    <filter id="glowGreen" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <filter id="playheadGlow" x="-50%" y="0%" width="200%" height="100%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <filter id="sparkGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <style>
+    .title-text { font-family: 'Cinzel', Georgia, serif; font-weight: 700; letter-spacing: 2px; }
+    .ui-text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    .code-text { font-family: 'SF Mono', Monaco, Consolas, monospace; }
+  </style>
+
+  <!-- Main Canvas Container -->
+  <rect width="960" height="540" rx="16" fill="url(#bgGlow)"/>
+  <rect width="958" height="538" x="1" y="1" rx="15" fill="none" stroke="#334155" stroke-opacity="0.6" stroke-width="1.5"/>
+
+  <!-- Top Navigation Header -->
+  <rect x="0" y="0" width="960" height="64" rx="16" fill="url(#headerGrad)"/>
+  <line x1="0" y1="64" x2="960" y2="64" stroke="#1e293b" stroke-width="1.5"/>
+
+  <!-- Triforce Icon -->
+  <g transform="translate(32, 20)">
+    <polygon points="12,2 2,22 22,22" fill="#facc15" stroke="#ca8a04" stroke-width="1"/>
+    <polygon points="12,22 7,12 17,12" fill="#080c10"/>
+  </g>
+
+  <!-- Title & Subtitle -->
+  <text x="64" y="36" fill="url(#goldTextGrad)" class="title-text" font-size="17">HYRULE SEQUENCER</text>
+  <text x="64" y="50" fill="#94a3b8" class="ui-text" font-size="11">The Interactive Score of Ocarina of Time</text>
+
+  <!-- Header Action Buttons -->
+  <!-- Menu Button -->
+  <g transform="translate(620, 18)">
+    <rect width="78" height="28" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+    <text x="39" y="18" fill="#e2e8f0" class="ui-text" font-size="11" font-weight="600" text-anchor="middle" letter-spacing="1">MENU</text>
+  </g>
+  <!-- Auto Toggle Button -->
+  <g transform="translate(710, 18)">
+    <rect width="102" height="28" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+    <circle cx="16" cy="14" r="3.5" fill="#64748b"/>
+    <text x="56" y="18" fill="#94a3b8" class="ui-text" font-size="11" font-weight="600" text-anchor="middle" letter-spacing="0.5">AUTO: OFF</text>
+  </g>
+  <!-- Fullscreen Button -->
+  <g transform="translate(824, 18)">
+    <rect width="36" height="28" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+    <path d="M834,26 h-3 v3 M850,26 h3 v3 M831,38 v3 h3 M853,38 v3 h-3" stroke="#94a3b8" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  </g>
+  <!-- Audio Engine Pill -->
+  <g transform="translate(872, 18)">
+    <rect width="56" height="28" rx="6" fill="rgba(34, 197, 94, 0.15)" stroke="#22c55e" stroke-width="1"/>
+    <circle cx="884" cy="32" r="3" fill="#4ade80"/>
+    <text x="906" y="36" fill="#4ade80" class="code-text" font-size="10" font-weight="700" text-anchor="middle">LIVE</text>
+  </g>
+
+  <!-- Visualizer Viewport Canvas (Y: 64 to 430) -->
+  <g transform="translate(32, 80)">
+    <!-- Canvas Inner Container -->
+    <rect width="896" height="340" rx="10" fill="#080c10" stroke="#1e293b" stroke-width="1.5"/>
+
+    <!-- Lane Backgrounds & Dividers -->
+    <!-- Lane 1: Melody (Y: 34 to 102) -->
+    <rect x="0" y="34" width="896" height="68" fill="rgba(255, 255, 255, 0.015)"/>
+    <line x1="0" y1="102" x2="896" y2="102" stroke="rgba(255, 255, 255, 0.05)" stroke-width="1"/>
+    <text x="20" y="48" fill="#64748b" class="ui-text" font-size="10" font-weight="600" letter-spacing="1">MELODY</text>
+
+    <!-- Lane 2: Harmony (Y: 102 to 196) -->
+    <rect x="0" y="102" width="896" height="94" fill="rgba(0, 0, 0, 0.12)"/>
+    <line x1="0" y1="196" x2="896" y2="196" stroke="rgba(255, 255, 255, 0.05)" stroke-width="1"/>
+    <text x="20" y="116" fill="#64748b" class="ui-text" font-size="10" font-weight="600" letter-spacing="1">HARMONY</text>
+
+    <!-- Lane 3: Bass (Y: 196 to 260) -->
+    <rect x="0" y="196" width="896" height="64" fill="rgba(255, 255, 255, 0.015)"/>
+    <line x1="0" y1="260" x2="896" y2="260" stroke="rgba(255, 255, 255, 0.05)" stroke-width="1"/>
+    <text x="20" y="210" fill="#64748b" class="ui-text" font-size="10" font-weight="600" letter-spacing="1">BASS</text>
+
+    <!-- Lane 4: Percussion (Y: 260 to 316) -->
+    <rect x="0" y="260" width="896" height="56" fill="rgba(0, 0, 0, 0.12)"/>
+    <line x1="0" y1="316" x2="896" y2="316" stroke="rgba(255, 255, 255, 0.05)" stroke-width="1"/>
+    <text x="20" y="274" fill="#64748b" class="ui-text" font-size="10" font-weight="600" letter-spacing="1">PERCUSSION</text>
+
+    <!-- Vertical Measure Grid Lines (Subtle Dashed) -->
+    <g stroke="rgba(255, 255, 255, 0.04)" stroke-dasharray="2,3" stroke-width="1">
+      <line x1="180" y1="34" x2="180" y2="316"/>
+      <line x1="280" y1="34" x2="280" y2="316"/>
+      <line x1="380" y1="34" x2="380" y2="316"/>
+      <line x1="580" y1="34" x2="580" y2="316"/>
+      <line x1="680" y1="34" x2="680" y2="316"/>
+      <line x1="780" y1="34" x2="780" y2="316"/>
+      <line x1="880" y1="34" x2="880" y2="316"/>
+    </g>
+
+    <!-- 8-Bar Phrase Boundary Line (Solid Emerald) -->
+    <line x1="480" y1="34" x2="480" y2="316" stroke="rgba(74, 222, 128, 0.45)" stroke-width="1.8"/>
+
+    <!-- Streaming Musical Notes -->
+    <!-- Lane 1: Melody Notes -->
+    <rect x="80" y="56" width="38" height="7" rx="3" fill="#ffffff" stroke="#86efac" stroke-width="1" filter="url(#glowGreen)"/>
+    <rect x="130" y="62" width="28" height="6.5" rx="3" fill="#4ade80" stroke="#86efac" stroke-width="1"/>
+    <rect x="170" y="52" width="55" height="7" rx="3" fill="#4ade80" stroke="#86efac" stroke-width="1"/>
+    <rect x="240" y="46" width="32" height="6.5" rx="3" fill="#4ade80" stroke="#86efac" stroke-width="1"/>
+    <rect x="285" y="58" width="75" height="7" rx="3" fill="#4ade80" stroke="#86efac" stroke-width="1"/>
+    <rect x="375" y="50" width="40" height="6.5" rx="3" fill="#4ade80" stroke="#86efac" stroke-width="1"/>
+    <rect x="425" y="66" width="45" height="6.5" rx="3" fill="#4ade80" stroke="#86efac" stroke-width="1"/>
+    <rect x="500" y="54" width="60" height="7" rx="3" fill="#4ade80" stroke="#86efac" stroke-width="1"/>
+    <rect x="580" y="48" width="35" height="6.5" rx="3" fill="#4ade80" stroke="#86efac" stroke-width="1"/>
+    <rect x="630" y="60" width="50" height="7" rx="3" fill="#4ade80" stroke="#86efac" stroke-width="1"/>
+    <rect x="710" y="52" width="65" height="7" rx="3" fill="#4ade80" stroke="#86efac" stroke-width="1"/>
+    <rect x="800" y="46" width="45" height="6.5" rx="3" fill="#4ade80" stroke="#86efac" stroke-width="1"/>
+
+    <!-- Lane 2: Harmony Notes (Warm Amber + Luminous Ivory Harp Runs) -->
+    <rect x="80" y="142" width="30" height="6" rx="2.5" fill="#ffffff" stroke="#fde68a" stroke-width="1" filter="url(#glowGreen)"/>
+    <rect x="115" y="130" width="25" height="6" rx="2.5" fill="#fbbf24" stroke="#fde68a" stroke-width="1"/>
+    <rect x="145" y="150" width="45" height="6" rx="2.5" fill="#fbbf24" stroke="#fde68a" stroke-width="1"/>
+    <!-- Harp / Arpeggio Run (Lighter distinctive luminous shade) -->
+    <g fill="#fef08a" stroke="#ffffff" stroke-width="1.2">
+      <rect x="200" y="172" width="14" height="6" rx="2.5"/>
+      <rect x="218" y="162" width="14" height="6" rx="2.5"/>
+      <rect x="236" y="152" width="14" height="6" rx="2.5"/>
+      <rect x="254" y="142" width="14" height="6" rx="2.5"/>
+      <rect x="272" y="132" width="14" height="6" rx="2.5"/>
+      <rect x="290" y="122" width="14" height="6" rx="2.5"/>
+    </g>
+    <rect x="320" y="138" width="65" height="6" rx="2.5" fill="#fbbf24" stroke="#fde68a" stroke-width="1"/>
+    <rect x="400" y="148" width="50" height="6" rx="2.5" fill="#fbbf24" stroke="#fde68a" stroke-width="1"/>
+    <!-- Second Arpeggio Run -->
+    <g fill="#fef08a" stroke="#ffffff" stroke-width="1.2">
+      <rect x="520" y="174" width="15" height="6" rx="2.5"/>
+      <rect x="538" y="164" width="15" height="6" rx="2.5"/>
+      <rect x="556" y="154" width="15" height="6" rx="2.5"/>
+      <rect x="574" y="144" width="15" height="6" rx="2.5"/>
+      <rect x="592" y="134" width="15" height="6" rx="2.5"/>
+    </g>
+    <rect x="630" y="140" width="70" height="6" rx="2.5" fill="#fbbf24" stroke="#fde68a" stroke-width="1"/>
+    <rect x="730" y="150" width="55" height="6" rx="2.5" fill="#fbbf24" stroke="#fde68a" stroke-width="1"/>
+    <rect x="810" y="136" width="60" height="6" rx="2.5" fill="#fbbf24" stroke="#fde68a" stroke-width="1"/>
+
+    <!-- Lane 3: Bass Notes -->
+    <rect x="80" y="228" width="42" height="6.5" rx="2.5" fill="#ffffff" stroke="#34d399" stroke-width="1"/>
+    <rect x="135" y="235" width="22" height="6.5" rx="2.5" fill="#10b981" stroke="#34d399" stroke-width="1"/>
+    <rect x="180" y="222" width="38" height="6.5" rx="2.5" fill="#10b981" stroke="#34d399" stroke-width="1"/>
+    <rect x="230" y="228" width="38" height="6.5" rx="2.5" fill="#10b981" stroke="#34d399" stroke-width="1"/>
+    <rect x="290" y="235" width="50" height="6.5" rx="2.5" fill="#10b981" stroke="#34d399" stroke-width="1"/>
+    <rect x="360" y="222" width="44" height="6.5" rx="2.5" fill="#10b981" stroke="#34d399" stroke-width="1"/>
+    <rect x="420" y="228" width="40" height="6.5" rx="2.5" fill="#10b981" stroke="#34d399" stroke-width="1"/>
+    <rect x="500" y="222" width="48" height="6.5" rx="2.5" fill="#10b981" stroke="#34d399" stroke-width="1"/>
+    <rect x="570" y="228" width="42" height="6.5" rx="2.5" fill="#10b981" stroke="#34d399" stroke-width="1"/>
+    <rect x="640" y="235" width="55" height="6.5" rx="2.5" fill="#10b981" stroke="#34d399" stroke-width="1"/>
+    <rect x="720" y="222" width="45" height="6.5" rx="2.5" fill="#10b981" stroke="#34d399" stroke-width="1"/>
+    <rect x="800" y="228" width="48" height="6.5" rx="2.5" fill="#10b981" stroke="#34d399" stroke-width="1"/>
+
+    <!-- Lane 4: Percussion Tiers (Snare, Hi-hat, Kick, Timpani) -->
+    <!-- Hi-hat tier (top) -->
+    <rect x="95" y="266" width="10" height="4.5" rx="1.5" fill="#a3e635"/>
+    <rect x="120" y="266" width="10" height="4.5" rx="1.5" fill="#a3e635"/>
+    <rect x="145" y="266" width="10" height="4.5" rx="1.5" fill="#a3e635"/>
+    <rect x="170" y="266" width="10" height="4.5" rx="1.5" fill="#a3e635"/>
+    <rect x="195" y="266" width="10" height="4.5" rx="1.5" fill="#a3e635"/>
+    <rect x="220" y="266" width="10" height="4.5" rx="1.5" fill="#a3e635"/>
+    <rect x="245" y="266" width="10" height="4.5" rx="1.5" fill="#a3e635"/>
+    <!-- Snare tier -->
+    <rect x="80" y="278" width="18" height="5.5" rx="2" fill="#ffffff" stroke="#bef264" stroke-width="1"/>
+    <rect x="130" y="278" width="18" height="5.5" rx="2" fill="#a3e635"/>
+    <rect x="180" y="278" width="18" height="5.5" rx="2" fill="#a3e635"/>
+    <rect x="230" y="278" width="18" height="5.5" rx="2" fill="#a3e635"/>
+    <rect x="280" y="278" width="18" height="5.5" rx="2" fill="#a3e635"/>
+    <rect x="330" y="278" width="18" height="5.5" rx="2" fill="#a3e635"/>
+    <!-- Kick / Timpani tier -->
+    <rect x="80" y="300" width="22" height="7" rx="2" fill="#ffffff" stroke="#bef264" stroke-width="1"/>
+    <rect x="160" y="300" width="20" height="7" rx="2" fill="#a3e635"/>
+    <rect x="240" y="300" width="20" height="7" rx="2" fill="#a3e635"/>
+    <rect x="320" y="300" width="22" height="7" rx="2" fill="#a3e635"/>
+
+    <!-- Passed Notes (Fade out to left edge) -->
+    <g opacity="0.35">
+      <rect x="25" y="56" width="30" height="7" rx="3" fill="#4ade80"/>
+      <rect x="40" y="142" width="25" height="6" rx="2.5" fill="#fbbf24"/>
+      <rect x="20" y="228" width="35" height="6.5" rx="2.5" fill="#10b981"/>
+    </g>
+
+    <!-- Playhead Vertical Line & Marker (X = 80) -->
+    <line x1="80" y1="34" x2="80" y2="316" stroke="#ffffff" stroke-width="2.2" filter="url(#playheadGlow)"/>
+    <polygon points="75,34 85,34 80,41" fill="#ffffff"/>
+    
+    <!-- Collision Sparks on Note Impact -->
+    <g filter="url(#sparkGlow)">
+      <circle cx="80" cy="59" r="4.5" fill="#ffffff"/>
+      <circle cx="80" cy="145" r="4" fill="#ffffff"/>
+      <circle cx="80" cy="231" r="3.5" fill="#ffffff"/>
+      <circle cx="80" cy="281" r="4" fill="#ffffff"/>
+      <circle cx="80" cy="303" r="4.5" fill="#ffffff"/>
+    </g>
+
+    <!-- Sticky 8-Bar Cue Title Pill (Active Cue at STICKY_LEFT) -->
+    <g transform="translate(24, 6)">
+      <rect width="280" height="24" rx="6" fill="rgba(20, 83, 45, 0.75)" stroke="rgba(74, 222, 128, 0.65)" stroke-width="1.2"/>
+      <circle cx="14" cy="12" r="3.5" fill="#4ade80"/>
+      <text x="26" y="16" fill="#86efac" class="ui-text" font-size="11" font-weight="700">Explore 1 (Bars 17–25) — Main Theme A</text>
+    </g>
+
+    <!-- Next Approaching Cue Pill at Bar 25 Boundary (X = 480) -->
+    <g transform="translate(470, 6)">
+      <rect width="250" height="24" rx="6" fill="rgba(20, 83, 45, 0.45)" stroke="rgba(74, 222, 128, 0.45)" stroke-width="1"/>
+      <circle cx="14" cy="12" r="3.5" fill="#4ade80"/>
+      <text x="26" y="16" fill="#86efac" class="ui-text" font-size="11" font-weight="600">Explore 2 (Bars 25–33) — March Var.</text>
+    </g>
+
+    <!-- Viewport Legend (Bottom Right inside Canvas) -->
+    <g transform="translate(680, 323)">
+      <circle cx="8" cy="7" r="4" fill="#4ade80"/>
+      <text x="18" y="11" fill="#94a3b8" class="ui-text" font-size="11">Explore</text>
+      <circle cx="78" cy="7" r="4" fill="#38bdf8"/>
+      <text x="88" y="11" fill="#94a3b8" class="ui-text" font-size="11">Rest</text>
+      <circle cx="138" cy="7" r="4" fill="#ef4444"/>
+      <text x="148" y="11" fill="#94a3b8" class="ui-text" font-size="11">Battle</text>
+    </g>
+  </g>
+
+  <!-- Player Controls: 3 Distinct Mode Selectors (Y: 440 to 510) -->
+  <g transform="translate(32, 442)">
+    <!-- Container -->
+    <rect width="896" height="74" rx="12" fill="#0f172a" stroke="#1e293b" stroke-width="1.2"/>
+
+    <!-- Mode 1: Explore Button (ACTIVE) -->
+    <g transform="translate(20, 12)">
+      <rect width="265" height="50" rx="10" fill="url(#activeExploreGrad)" stroke="#22c55e" stroke-width="1.8"/>
+      <text x="132" y="31" fill="#4ade80" class="ui-text" font-size="15" font-weight="700" text-anchor="middle" letter-spacing="1">Explore [1]</text>
+      <!-- Subtitle badge -->
+      <circle cx="70" cy="26" r="4" fill="#4ade80" filter="url(#glowGreen)"/>
+    </g>
+
+    <!-- Mode 2: Rest Button -->
+    <g transform="translate(315, 12)">
+      <rect width="265" height="50" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.2"/>
+      <text x="132" y="31" fill="#94a3b8" class="ui-text" font-size="15" font-weight="600" text-anchor="middle" letter-spacing="1">Rest [2]</text>
+    </g>
+
+    <!-- Mode 3: Battle Button -->
+    <g transform="translate(610, 12)">
+      <rect width="265" height="50" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.2"/>
+      <text x="132" y="31" fill="#94a3b8" class="ui-text" font-size="15" font-weight="600" text-anchor="middle" letter-spacing="1">Battle [3]</text>
+    </g>
+  </g>
+</svg>
