@@ -686,19 +686,89 @@ document.addEventListener('DOMContentLoaded', () => {
   const PLAYHEAD_X = 64; // Playhead X anchor
   const PIXELS_PER_SEC = 112; // Expanded conveyor rate for horizontal breathing room between fast notes
 
+  // Dynamic lane geometry definitions (stretches/shrinks gaps between musical parts and lane heights to fit screen)
+  const LANES = {
+    melody: { top: 28, bottom: 88, height: 60, baseHeight: 60, label: 'MELODY' },
+    harmony: { top: 94, bottom: 176, height: 82, baseHeight: 82, label: 'HARM' },
+    bass: { top: 182, bottom: 238, height: 56, baseHeight: 56, label: 'BASS' },
+    percussion: { top: 244, bottom: 294, height: 50, baseHeight: 50, label: 'PERC' }
+  };
+
   let cachedCanvasWidth = 800;
-  const cachedCanvasHeight = 300; // 300px height for uncrowded multi-track separation
+  let cachedCanvasHeight = 300;
+  let currentLaneGap = 6;
+  let layoutVersion = 1;
   let resizeRafId = null;
 
-  // Setup HiDPI Canvas Scaling (spans full viewport width in any orientation without GPU thrashing)
+  function updateLaneGeometry(canvasHeight) {
+    const h = Math.max(140, Math.round(canvasHeight || 300));
+    const baseTotalLaneH = 248; // 60 + 82 + 56 + 50
+    let headerClearance = 28;
+    let bottomMargin = 6;
+    let laneGap = 6;
+
+    if (h >= 300) {
+      const extra = h - 300;
+      headerClearance = Math.round(Math.min(38, 28 + extra * 0.035));
+      bottomMargin = Math.round(6 + extra * 0.065);
+      const remainingExtra = Math.max(0, h - 300 - (headerClearance - 28) - (bottomMargin - 6));
+      // Stretch gaps between musical parts (~55% of extra height) while also expanding lane heights (~45%)
+      const extraGapTotal = remainingExtra * 0.55;
+      laneGap = Math.round(6 + extraGapTotal / 3);
+    } else {
+      const deficit = 300 - h;
+      // On short landscape displays, shrink gaps between musical parts first before compressing lanes
+      headerClearance = Math.max(20, Math.round(28 - deficit * 0.08));
+      bottomMargin = Math.max(2, Math.round(6 - deficit * 0.06));
+      laneGap = Math.max(1, Math.round(6 - deficit * 0.1));
+    }
+
+    currentLaneGap = laneGap;
+    const availLaneHeight = Math.max(88, h - headerClearance - bottomMargin - 3 * laneGap);
+    const scale = availLaneHeight / baseTotalLaneH;
+
+    const mH = Math.max(22, Math.round(60 * scale));
+    const hH = Math.max(28, Math.round(82 * scale));
+    const bH = Math.max(20, Math.round(56 * scale));
+    const pH = Math.max(18, availLaneHeight - mH - hH - bH);
+
+    LANES.melody.top = headerClearance;
+    LANES.melody.height = mH;
+    LANES.melody.bottom = LANES.melody.top + mH;
+
+    LANES.harmony.top = LANES.melody.bottom + laneGap;
+    LANES.harmony.height = hH;
+    LANES.harmony.bottom = LANES.harmony.top + hH;
+
+    LANES.bass.top = LANES.harmony.bottom + laneGap;
+    LANES.bass.height = bH;
+    LANES.bass.bottom = LANES.bass.top + bH;
+
+    LANES.percussion.top = LANES.bass.bottom + laneGap;
+    LANES.percussion.height = pH;
+    LANES.percussion.bottom = LANES.percussion.top + pH;
+
+    layoutVersion++;
+  }
+
+  // Setup HiDPI Canvas Scaling (spans full viewport width & responsive height in any orientation without GPU thrashing)
   function setupCanvasDPI() {
     if (!canvas || !ctx) return;
     const dpr = Math.min(2, window.devicePixelRatio || 1); // Cap DPR at 2 for mobile GPU efficiency
-    const newWidth = canvas.clientWidth || window.innerWidth || 800;
+    const container = canvas.parentElement || canvas;
+    const newWidth = Math.max(300, container.clientWidth || canvas.clientWidth || window.innerWidth || 800);
+    const newHeight = Math.max(140, container.clientHeight || canvas.clientHeight || 300);
+
+    const heightChanged = (newHeight !== cachedCanvasHeight);
     cachedCanvasWidth = newWidth;
+    cachedCanvasHeight = newHeight;
+
+    if (heightChanged || layoutVersion === 1) {
+      updateLaneGeometry(newHeight);
+    }
 
     const targetW = Math.round(newWidth * dpr);
-    const targetH = Math.round(cachedCanvasHeight * dpr);
+    const targetH = Math.round(newHeight * dpr);
 
     // Only update canvas dimensions if they actually changed to prevent bitmap texture reallocations
     if (canvas.width !== targetW || canvas.height !== targetH) {
@@ -722,6 +792,13 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(debouncedCanvasResize, 150);
     setTimeout(debouncedCanvasResize, 350);
   }, { passive: true });
+
+  if (typeof ResizeObserver !== 'undefined' && canvas && canvas.parentElement) {
+    const resizeObserver = new ResizeObserver(() => {
+      debouncedCanvasResize();
+    });
+    resizeObserver.observe(canvas.parentElement);
+  }
 
   let wasAutoPausedByMinimize = false;
 
@@ -768,14 +845,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   setupCanvasDPI();
 
-  // Lane geometry definitions (spacious 300px height with dedicated header clearance for sticky titles)
-  const LANES = {
-    melody: { top: 28, bottom: 88, height: 60, label: 'MELODY' },
-    harmony: { top: 94, bottom: 176, height: 82, label: 'HARM' },
-    bass: { top: 182, bottom: 238, height: 56, label: 'BASS' },
-    percussion: { top: 244, bottom: 294, height: 50, label: 'PERC' }
-  };
-
   // Static color table: eliminates per-frame object allocations
   const NOTE_COLORS = {
     melody: {
@@ -806,10 +875,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // Zero-allocation note layout and color resolver: computes and caches y, h, and colors once per note
+  // Zero-allocation note layout and color resolver: computes and caches y, h, and colors once per note (updates when layoutVersion changes)
   function ensureNoteLayoutAndColors(note) {
     if (!note) return;
-    if (note._y !== undefined && note._colors !== undefined) return;
+    if (note._layoutVersion === layoutVersion && note._y !== undefined && note._colors !== undefined) return;
 
     const track = note.trackType || 'melody';
     const isArp = Boolean(note.isArp) || (track === 'harmony' && (
@@ -820,48 +889,65 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (track === 'melody') {
       const lane = LANES.melody;
+      const laneScale = Math.max(0.68, Math.min(1.45, lane.height / 60));
+      const topClear = Math.max(2, 2.5 * laneScale);
+      const botClear = Math.max(2, 4 * laneScale);
       const minMidi = 48;
       const maxMidi = 96;
       const norm = Math.max(0, Math.min(1, (note.midi - minMidi) / (maxMidi - minMidi)));
-      note._h = 5.5;
-      note._y = (lane.bottom - 4) - norm * (lane.height - 12) - note._h;
+      note._h = Math.max(3.5, 5.5 * laneScale);
+      const usableH = Math.max(4, lane.height - topClear - botClear - note._h);
+      note._y = (lane.bottom - botClear) - norm * usableH - note._h;
     } else if (track === 'harmony') {
       const lane = LANES.harmony;
+      const laneScale = Math.max(0.68, Math.min(1.45, lane.height / 82));
+      const topClear = Math.max(2, 3 * laneScale);
+      const botClear = Math.max(2, 4 * laneScale);
       const minMidi = 36;
       const maxMidi = 96;
       const norm = Math.max(0, Math.min(1, (note.midi - minMidi) / (maxMidi - minMidi)));
-      note._h = isArp ? 6 : 5.5;
-      note._y = (lane.bottom - 4) - norm * (lane.height - 13) - note._h;
+      note._h = Math.max(3.5, (isArp ? 6 : 5.5) * laneScale);
+      const usableH = Math.max(4, lane.height - topClear - botClear - note._h);
+      note._y = (lane.bottom - botClear) - norm * usableH - note._h;
     } else if (track === 'bass') {
       const lane = LANES.bass;
+      const laneScale = Math.max(0.68, Math.min(1.45, lane.height / 56));
+      const topClear = Math.max(2, 3 * laneScale);
+      const botClear = Math.max(2, 4 * laneScale);
       const minMidi = 30;
       const maxMidi = 66;
       const norm = Math.max(0, Math.min(1, (note.midi - minMidi) / (maxMidi - minMidi)));
-      note._h = 6;
-      note._y = (lane.bottom - 4) - norm * (lane.height - 13) - note._h;
+      note._h = Math.max(3.8, 6 * laneScale);
+      const usableH = Math.max(4, lane.height - topClear - botClear - note._h);
+      note._y = (lane.bottom - botClear) - norm * usableH - note._h;
     } else {
-      // Percussion: dedicated 4 vertical tiers so drum hits never overlap
+      // Percussion: dedicated 4 vertical tiers scaled proportionally to percussion lane height
       const lane = LANES.percussion;
+      const laneScale = lane.height / 50;
+      const noteScale = Math.max(0.68, Math.min(1.45, laneScale));
       const pitch = note.midi;
       if (pitch === 42 || pitch === 44 || pitch === 46) {
-        note._y = lane.top + 6;
-        note._h = 4.5;
+        note._y = lane.top + 6 * laneScale;
+        note._h = Math.max(3.2, 4.5 * noteScale);
       } else if (pitch === 38 || pitch === 43) {
-        note._y = lane.top + 18;
-        note._h = 6;
+        note._y = lane.top + 18 * laneScale;
+        note._h = Math.max(3.8, 6 * noteScale);
       } else if (pitch >= 30 && pitch <= 35) {
-        note._y = lane.top + 29;
-        note._h = 6.5;
+        note._y = lane.top + 29 * laneScale;
+        note._h = Math.max(4.2, 6.5 * noteScale);
       } else {
-        note._y = lane.bottom - 11;
-        note._h = 7.5;
+        note._h = Math.max(4.8, 7.5 * noteScale);
+        note._y = lane.bottom - Math.max(note._h + 2, 11 * laneScale);
       }
     }
 
-    const colorTrack = isArp ? 'harmony_arpeggio' : track;
-    const mode = note.mode || 'EXPLORATION';
-    const trackColors = NOTE_COLORS[colorTrack] || NOTE_COLORS.melody;
-    note._colors = trackColors[mode] || trackColors.EXPLORATION || NOTE_COLORS.melody.EXPLORATION;
+    if (note._colors === undefined) {
+      const colorTrack = isArp ? 'harmony_arpeggio' : track;
+      const mode = note.mode || 'EXPLORATION';
+      const trackColors = NOTE_COLORS[colorTrack] || NOTE_COLORS.melody;
+      note._colors = trackColors[mode] || trackColors.EXPLORATION || NOTE_COLORS.melody.EXPLORATION;
+    }
+    note._layoutVersion = layoutVersion;
   }
 
   let lastVisualizerSec = 0;
@@ -986,21 +1072,29 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function drawCanvasBackground(ctx, width, height, currentTransportSec) {
+    const lanesTop = LANES.melody.top;
+    const lanesBottom = LANES.percussion.bottom;
+    const laneFontPx = Math.max(8, Math.min(11, Math.round(9 * (LANES.melody.height / 60))));
+
     // 1. Draw Lane Backdrops & Dividers
     Object.values(LANES).forEach((lane, idx) => {
-      ctx.fillStyle = idx % 2 === 0 ? 'rgba(255, 255, 255, 0.012)' : 'rgba(0, 0, 0, 0.12)';
+      ctx.fillStyle = idx % 2 === 0 ? 'rgba(255, 255, 255, 0.015)' : 'rgba(0, 0, 0, 0.14)';
       ctx.fillRect(0, lane.top, width, lane.height);
 
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
       ctx.lineWidth = 1;
       ctx.beginPath();
+      if (idx > 0 && currentLaneGap > 8) {
+        ctx.moveTo(0, lane.top);
+        ctx.lineTo(width, lane.top);
+      }
       ctx.moveTo(0, lane.bottom);
       ctx.lineTo(width, lane.bottom);
       ctx.stroke();
 
       ctx.fillStyle = 'rgba(148, 163, 184, 0.35)';
-      ctx.font = '600 9px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
-      ctx.fillText(lane.label, 24, lane.top + 12);
+      ctx.font = `600 ${laneFontPx}px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`;
+      ctx.fillText(lane.label, 24, lane.top + Math.min(lane.height - 4, laneFontPx + 3));
     });
 
     // 2. Measure / Bar Grid Lines
@@ -1028,22 +1122,22 @@ document.addEventListener('DOMContentLoaded', () => {
           ctx.lineWidth = 1.5;
           ctx.setLineDash([]);
           ctx.beginPath();
-          ctx.moveTo(barX, 28);
-          ctx.lineTo(barX, height);
+          ctx.moveTo(barX, lanesTop);
+          ctx.lineTo(barX, lanesBottom);
           ctx.stroke();
         } else {
           ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
           ctx.lineWidth = 1;
           ctx.setLineDash([2, 3]);
           ctx.beginPath();
-          ctx.moveTo(barX, 28);
-          ctx.lineTo(barX, height);
+          ctx.moveTo(barX, lanesTop);
+          ctx.lineTo(barX, lanesBottom);
           ctx.stroke();
         }
       }
     }
 
-    // Pass B: Sticky 8-Bar Cue Titles with full title & increased font sizing
+    // Pass B: Sticky 8-Bar Cue Titles with full title & responsive font sizing
     const cueLinesToRender = [];
     for (let i = 0; i < measureLines.length; i++) {
       const line = measureLines[i];
@@ -1054,6 +1148,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     cueLinesToRender.sort((a, b) => a.line.transportTime - b.line.transportTime);
+
+    const cueFontPx = lanesTop < 25 ? 11 : (lanesTop >= 33 ? 13 : 12);
+    const pillH = Math.max(16, Math.min(lanesTop - 4, cueFontPx + 10));
+    const pillY = Math.max(2, Math.floor((lanesTop - pillH) / 2));
 
     for (let i = 0; i < cueLinesToRender.length; i++) {
       const item = cueLinesToRender[i];
@@ -1072,11 +1170,9 @@ document.addEventListener('DOMContentLoaded', () => {
         ? 'rgba(239, 68, 68, 0.5)'
         : (mode === 'QUIET' ? 'rgba(56, 189, 248, 0.5)' : 'rgba(74, 222, 128, 0.5)');
 
-      ctx.font = '600 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.font = `600 ${cueFontPx}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
       const textWidth = ctx.measureText(fullTitle).width;
       const pillW = textWidth + 20;
-      const pillH = 22;
-      const pillY = 4;
 
       let pillX = barX - 10;
 
@@ -1118,6 +1214,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function drawPlayhead(ctx, height, isHitting, cueInfo, activeHitVelocitySum = 0) {
     ctx.save();
 
+    const lanesTop = LANES.melody.top;
+    const lanesBottom = LANES.percussion.bottom;
+
     const hitColor = (cueInfo.cueMode === 'BATTLE')
       ? '#ef4444'
       : (cueInfo.cueMode === 'QUIET' ? '#38bdf8' : '#4ade80');
@@ -1132,16 +1231,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     ctx.beginPath();
-    ctx.moveTo(PLAYHEAD_X, 28);
-    ctx.lineTo(PLAYHEAD_X, height);
+    ctx.moveTo(PLAYHEAD_X, lanesTop);
+    ctx.lineTo(PLAYHEAD_X, lanesBottom);
     ctx.stroke();
 
-    // Playhead top marker at Y=28
+    // Playhead top marker at lanesTop
     ctx.fillStyle = isHitting ? '#ffffff' : hitColor;
     ctx.beginPath();
-    ctx.moveTo(PLAYHEAD_X - 5, 28);
-    ctx.lineTo(PLAYHEAD_X + 5, 28);
-    ctx.lineTo(PLAYHEAD_X, 34);
+    ctx.moveTo(PLAYHEAD_X - 5, lanesTop);
+    ctx.lineTo(PLAYHEAD_X + 5, lanesTop);
+    ctx.lineTo(PLAYHEAD_X, lanesTop + 6);
     ctx.closePath();
     ctx.fill();
 
@@ -1150,9 +1249,9 @@ document.addEventListener('DOMContentLoaded', () => {
       ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
       const sparkR = Math.min(3.5, 1.2 + intensity);
       ctx.beginPath();
-      ctx.arc(PLAYHEAD_X, height * 0.28, sparkR, 0, Math.PI * 2);
-      ctx.arc(PLAYHEAD_X, height * 0.52, sparkR * 0.85, 0, Math.PI * 2);
-      ctx.arc(PLAYHEAD_X, height * 0.78, sparkR * 1.1, 0, Math.PI * 2);
+      ctx.arc(PLAYHEAD_X, (LANES.melody.top + LANES.melody.bottom) * 0.5, sparkR, 0, Math.PI * 2);
+      ctx.arc(PLAYHEAD_X, (LANES.harmony.top + LANES.harmony.bottom) * 0.5, sparkR * 0.85, 0, Math.PI * 2);
+      ctx.arc(PLAYHEAD_X, (LANES.bass.top + LANES.bass.bottom) * 0.5, sparkR * 1.1, 0, Math.PI * 2);
       ctx.fill();
     }
 
