@@ -1,3 +1,11 @@
+@font-face {
+    font-family: 'Triforce';
+    src: url('./Triforce-y07d.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
 :root {
     --bg-dark: #090c10;
     --console-bg: #141a22;
@@ -16,7 +24,7 @@
     --amber-pending: #fb923c;
 
     /* Zelda Typography */
-    --font-title: 'Cinzel Decorative', 'Cinzel', Georgia, serif;
+    --font-title: 'Triforce', 'Cinzel Decorative', 'Cinzel', Georgia, serif;
     --font-heading: 'Cinzel', Georgia, serif;
     --font-body: 'Marcellus', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, serif;
 }
@@ -121,11 +129,11 @@ body {
 
 .splash-title {
     font-family: var(--font-title);
-    font-size: clamp(1.85rem, 4vw, 3.2rem);
-    font-weight: 900;
-    letter-spacing: 3px;
+    font-size: clamp(2.1rem, 4.5vw, 3.6rem);
+    font-weight: normal;
+    letter-spacing: 2px;
     color: #ffffff;
-    line-height: 1.15;
+    line-height: 1.2;
     text-shadow: 0 0 25px rgba(250, 204, 21, 0.35);
 }
 
@@ -374,11 +382,12 @@ body {
 
 .menu-section-title {
     font-family: var(--font-title);
-    font-size: clamp(1.15rem, 1.55vw, 1.6rem);
-    font-weight: 800;
+    font-size: clamp(1.25rem, 1.75vw, 1.8rem);
+    font-weight: normal;
     color: #f8fafc;
     margin-bottom: clamp(0.85rem, 1.4vw, 1.25rem);
-    letter-spacing: 1px;
+    letter-spacing: 1.2px;
+    line-height: 1.25;
 }
 
 .about-content {
@@ -400,14 +409,14 @@ body {
 }
 
 .about-subheading {
-    font-family: var(--font-heading);
-    font-size: clamp(0.88rem, 1.05vw, 1.08rem);
-    font-weight: 700;
+    font-family: var(--font-title);
+    font-size: clamp(1.02rem, 1.2vw, 1.25rem);
+    font-weight: normal;
     color: var(--gold);
-    letter-spacing: 0.6px;
+    letter-spacing: 1px;
     margin-top: 0.6rem;
     margin-bottom: -0.2rem;
-    text-transform: uppercase;
+    line-height: 1.3;
 }
 
 .about-list {
@@ -502,11 +511,11 @@ body {
 
 .brand-text {
     font-family: var(--font-title);
-    font-size: clamp(0.95rem, 1.5vw, 1.4rem);
-    font-weight: 800;
-    letter-spacing: 2px;
+    font-size: clamp(1.1rem, 1.75vw, 1.6rem);
+    font-weight: normal;
+    letter-spacing: 1.5px;
     color: #f8fafc;
-    text-transform: uppercase;
+    line-height: 1.2;
 }
 
 .header-actions {
@@ -627,11 +636,11 @@ body {
 }
 
 .mixer-title {
-    font-size: 0.76rem;
-    font-weight: 800;
+    font-family: var(--font-title);
+    font-size: 0.9rem;
+    font-weight: normal;
     letter-spacing: 1px;
     color: var(--gold);
-    text-transform: uppercase;
 }
 
 .mixer-close-btn {
@@ -955,7 +964,7 @@ body {
     }
 
     .brand-text {
-        font-size: 0.88rem;
+        font-size: 1.02rem;
         letter-spacing: 1.2px;
     }
 
@@ -977,7 +986,7 @@ body {
     }
 
     .brand-text {
-        font-size: 0.9rem;
+        font-size: 1.02rem;
     }
 
     .header-btn {
@@ -1025,7 +1034,7 @@ body {
     }
 
     .splash-title {
-        font-size: clamp(1.35rem, 3.5vw, 1.85rem);
+        font-size: clamp(1.55rem, 4vw, 2.1rem);
     }
 
     .splash-subtitle {
