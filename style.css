@@ -75,6 +75,23 @@ body {
     box-sizing: border-box;
 }
 
+.nintendo-console::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    background-image: url('./triforce-bg.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: invert(0.65);
+    opacity: 0.14;
+    pointer-events: none;
+    z-index: 0;
+}
+
 /* Splash Screen / Start Overlay (Clean, Minimal Title & Subtitle) */
 .play-overlay {
     position: fixed;
@@ -100,7 +117,7 @@ body {
 }
 
 .splash-card {
-    max-width: clamp(480px, 50vw, 680px);
+    max-width: clamp(480px, 55vw, 760px);
     width: 100%;
     margin: 0 auto;
     display: flex;
@@ -129,9 +146,9 @@ body {
 
 .splash-title {
     font-family: var(--font-title);
-    font-size: clamp(2.1rem, 4.5vw, 3.6rem);
+    font-size: clamp(2.85rem, 6.8vw, 5rem);
     font-weight: normal;
-    letter-spacing: 2px;
+    letter-spacing: 2.5px;
     color: #ffffff;
     line-height: 1.2;
     text-shadow: 0 0 25px rgba(250, 204, 21, 0.35);
@@ -382,11 +399,11 @@ body {
 
 .menu-section-title {
     font-family: var(--font-title);
-    font-size: clamp(1.25rem, 1.75vw, 1.8rem);
+    font-size: clamp(1.7rem, 2.5vw, 2.4rem);
     font-weight: normal;
     color: #f8fafc;
     margin-bottom: clamp(0.85rem, 1.4vw, 1.25rem);
-    letter-spacing: 1.2px;
+    letter-spacing: 1.5px;
     line-height: 1.25;
 }
 
@@ -410,12 +427,12 @@ body {
 
 .about-subheading {
     font-family: var(--font-title);
-    font-size: clamp(1.02rem, 1.2vw, 1.25rem);
+    font-size: clamp(1.35rem, 1.7vw, 1.75rem);
     font-weight: normal;
     color: var(--gold);
-    letter-spacing: 1px;
-    margin-top: 0.6rem;
-    margin-bottom: -0.2rem;
+    letter-spacing: 1.2px;
+    margin-top: 0.65rem;
+    margin-bottom: -0.15rem;
     line-height: 1.3;
 }
 
@@ -494,6 +511,8 @@ body {
 
 /* Header */
 .console-header {
+    position: relative;
+    z-index: 1;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -511,9 +530,9 @@ body {
 
 .brand-text {
     font-family: var(--font-title);
-    font-size: clamp(1.1rem, 1.75vw, 1.6rem);
+    font-size: clamp(1.5rem, 2.6vw, 2.3rem);
     font-weight: normal;
-    letter-spacing: 1.5px;
+    letter-spacing: 1.8px;
     color: #f8fafc;
     line-height: 1.2;
 }
@@ -637,9 +656,9 @@ body {
 
 .mixer-title {
     font-family: var(--font-title);
-    font-size: 0.9rem;
+    font-size: 1.25rem;
     font-weight: normal;
-    letter-spacing: 1px;
+    letter-spacing: 1.2px;
     color: var(--gold);
 }
 
@@ -797,6 +816,7 @@ body {
 /* Edge-to-Edge Full-Width Visualizer - Flexibly Expands or Shrinks Vertically */
 .viewport-canvas {
     position: relative;
+    z-index: 1;
     width: 100vw;
     width: 100%;
     flex: 1 1 0%;
@@ -858,6 +878,8 @@ body {
 
 /* Player Controls - Borderless, Clean & Modern */
 .player-controls {
+    position: relative;
+    z-index: 1;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -964,8 +986,8 @@ body {
     }
 
     .brand-text {
-        font-size: 1.02rem;
-        letter-spacing: 1.2px;
+        font-size: 1.4rem;
+        letter-spacing: 1.4px;
     }
 
     .header-btn {
@@ -986,7 +1008,7 @@ body {
     }
 
     .brand-text {
-        font-size: 1.02rem;
+        font-size: 1.4rem;
     }
 
     .header-btn {
@@ -1034,7 +1056,7 @@ body {
     }
 
     .splash-title {
-        font-size: clamp(1.55rem, 4vw, 2.1rem);
+        font-size: clamp(2.15rem, 5.5vw, 3.2rem);
     }
 
     .splash-subtitle {

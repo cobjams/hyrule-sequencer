@@ -988,9 +988,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const cssWidth = cachedCanvasWidth;
         const cssHeight = cachedCanvasHeight;
 
-        // Clear Canvas Background
-        ctx.fillStyle = '#080c10';
-        ctx.fillRect(0, 0, cssWidth, cssHeight);
+        // Clear Canvas Background (transparent so the Hylian Crest background shows through)
+        ctx.clearRect(0, 0, cssWidth, cssHeight);
 
         // Draw background grid & lane separators
         drawCanvasBackground(ctx, cssWidth, cssHeight, visualizerSec);
