@@ -86,7 +86,7 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    transform: scale(0.85);
+    transform: scale(0.75);
     transform-origin: center center;
     filter: invert(0.65);
     opacity: 0.126;
@@ -1071,4 +1071,3 @@ body {
         padding: 0.45rem 1.6rem;
     }
 }
-
